@@ -2,25 +2,28 @@
 
 ## Objectif
 
-Préparer le projet : infrastructure, architecture, design system de base, connectivité frontend ↔ backend ↔ MongoDB, sans fonctionnalité métier.
+Préparer le projet : infrastructure frontend, design system, état global et connectivité vers l'API, sans fonctionnalité métier.
+
+## Organisation des repos
+
+- Repository indépendant par sous-projet (décision utilisateur) : `frontend` et `backend` sont deux repos Git séparés.
 
 ## Fonctionnalités réalisées
 
-- Repository initialisé (Git, branche `main`).
-- `frontend/` : Vite + React 19 + TypeScript + Tailwind CSS v4.
-- `backend/` : Node.js + TypeScript + Express + Mongoose.
-- Endpoint `GET /api/health` opérationnel.
-- Connexion MongoDB Atlas validée (base `Nearpro`).
+- Repository frontend initialisé (Git, branche `main`).
+- Frontend : Vite + React 19 + TypeScript + Tailwind CSS v4.
+- **Redux Toolkit** (`src/store/`) : état global applicatif (hooks typés `useAppDispatch`/`useAppSelector`, slice UI pour les notifications).
+- TanStack Query (cache des données serveur) + **Zod** (`@hookform/resolvers`, `zodResolver`) pour la validation des formulaires avec react-hook-form.
+- Endpoint `GET /api/health` opérationnel via le proxy Vite (`database: connected`).
 - Design tokens (`src/styles/tokens.css`) et mapping Tailwind (`@theme inline`).
 - Base du design system (`components/ui/`) : Button, Input, Textarea, Select, Badge, Card, Spinner, Skeleton.
-- Configuration ESLint + Prettier (frontend et backend).
-- `.env.example`, `.gitignore`, `README.md`, `docs/` (architecture, design-system, roadmap).
+- Routing React Router, layout public.
+- Configuration ESLint + Prettier, `.env`/`.gitignore`, README.
+- Documentation : `docs/architecture.md`, `docs/design-system.md`, `docs/roadmap.md`, `docs/sprints/`.
 
 ## Fichiers principaux
 
-- `backend/src/config/{env,database}.ts`, `backend/src/middlewares/{errorHandler,sanitizeNoSql}.ts`, `backend/src/modules/health/{controller,routes}.ts`, `backend/src/{app,server}.ts`, `backend/tsconfig.json`.
-- `frontend/src/styles/tokens.css`, `frontend/src/index.css`, `frontend/src/routes/index.tsx`, `frontend/src/main.tsx`, `frontend/src/layouts/PublicLayout/index.tsx`, `frontend/src/pages/HomePage.tsx`, `frontend/src/components/ui/*`.
-- Racine : `.gitignore`, `README.md`, `docs/*`.
+- `frontend/src/styles/tokens.css`, `frontend/src/index.css`, `frontend/src/routes/index.tsx`, `frontend/src/main.tsx`, `frontend/src/layouts/PublicLayout/index.tsx`, `frontend/src/pages/HomePage.tsx`, `frontend/src/store/*`, `frontend/src/components/ui/*`.
 
 ## Base de données
 
@@ -29,7 +32,7 @@ Préparer le projet : infrastructure, architecture, design system de base, conne
 
 ## API ajoutées
 
-- `GET /api/health` → `{ success, data: { status, service, environment, uptime, timestamp, database, databaseName } }`.
+- Consommation de `GET /api/health` via le proxy Vite (lib `src/lib/api.ts`, service `src/services/health.ts`).
 
 ## Design system / responsive
 
