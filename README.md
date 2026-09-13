@@ -36,6 +36,18 @@ src/
 - **TanStack Query** : cache des données serveur (health, businesses, search).
 - **Zod** : schémas de validation partagés entre les formulaires (react-hook-form `zodResolver`) et les types.
 
+## Routes (Sprint 1)
+
+- `/` — page d'accueil
+- `/login` — connexion
+- `/register` — création de compte (CUSTOMER / PROFESSIONAL)
+
+## Mobile-first
+
+Reprise du langage visuel des applications de messagerie (type WhatsApp) : plein écran,
+cibles tactiles ≥ 44 px, coins très arrondis, en-têtes sticky, zones sûres (`pt-safe`/`pb-safe`).
+Le responsive est vérifié de 320 px à 2560 px.
+
 ## Démarrage
 
 ```bash

@@ -14,8 +14,11 @@ export class ApiError extends Error {
   }
 }
 
-export async function apiGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_BASE}${path}`)
+async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    credentials: 'include',
+    ...options,
+  })
 
   let body: ApiResponse<T>
   try {
@@ -29,4 +32,16 @@ export async function apiGet<T>(path: string): Promise<T> {
   }
 
   return body.data
+}
+
+export function apiGet<T>(path: string): Promise<T> {
+  return apiRequest<T>(path)
+}
+
+export function apiPost<T>(path: string, payload?: unknown): Promise<T> {
+  return apiRequest<T>(path, {
+    method: 'POST',
+    headers: payload === undefined ? undefined : { 'Content-Type': 'application/json' },
+    body: payload === undefined ? undefined : JSON.stringify(payload),
+  })
 }

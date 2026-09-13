@@ -5,6 +5,19 @@ export interface ApiResponse<T> {
   errors?: unknown
 }
 
+export type UserRole = 'CUSTOMER' | 'PROFESSIONAL' | 'ADMIN'
+
+export interface AuthUser {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  phone: string | null
+  role: UserRole
+  createdAt: string
+  updatedAt: string
+}
+
 export interface Pagination {
   page: number
   limit: number
