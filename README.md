@@ -44,9 +44,10 @@ src/
 
 ## Mobile-first
 
-Reprise du langage visuel des applications de messagerie (type WhatsApp) : plein écran,
-cibles tactiles ≥ 44 px, coins très arrondis, en-têtes sticky, zones sûres (`pt-safe`/`pb-safe`).
-Le responsive est vérifié de 320 px à 2560 px.
+Reprise du langage visuel d'**Angi.com** (palette corail, formes rondes, landing orientée
+« trouver le bon pro ») et des applications de messagerie type WhatsApp : plein écran,
+cibles tactiles ≥ 44 px, coins très arrondis, en-têtes sticky, zones sûres
+(`pt-safe`/`pb-safe`). Le responsive est vérifié de 320 px à 2560 px.
 
 ## Démarrage
 
