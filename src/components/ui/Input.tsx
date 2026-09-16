@@ -38,7 +38,7 @@ export function Input({
         ) : null}
         <input
           id={inputId}
-          className={`${inputClasses(Boolean(error))} ${leading ? 'pl-12' : ''} ${trailing ? 'pr-11' : ''} ${className}`}
+          className={`${inputClasses(Boolean(error))} ${leading ? 'pl-16' : ''} ${trailing ? 'pr-11' : ''} ${className}`}
           {...props}
         />
         {trailing ? (

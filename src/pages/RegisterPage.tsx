@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   ArrowLeft,
+  Check,
   CheckCircle2,
   Circle,
   Eye,
   EyeOff,
+  RefreshCw,
   Sparkles,
   XCircle,
 } from 'lucide-react'
@@ -33,12 +35,27 @@ function normalizePhone(raw: string): string {
   return `+237 ${local}`
 }
 
+function formatPhoneInput(raw: string): string {
+  const digits = raw.replace(/\D/g, '').replace(/^237/, '').slice(0, 9)
+  if (!digits) return ''
+  return [
+    digits.slice(0, 1),
+    digits.slice(1, 3),
+    digits.slice(3, 5),
+    digits.slice(5, 7),
+    digits.slice(7, 9),
+  ]
+    .filter(Boolean)
+    .join(' ')
+}
+
 export function RegisterPage() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const [passwordFocused, setPasswordFocused] = useState(false)
+  const [passwordSuggestion, setPasswordSuggestion] = useState<string | null>(null)
 
   const {
     register,
@@ -62,8 +79,14 @@ export function RegisterPage() {
   const allRulesMet = PASSWORD_RULES.every((rule) => rule.test(passwordValue))
   const showChecklist = (passwordFocused || passwordValue.length > 0) && !allRulesMet
 
-  function handleGeneratePassword() {
-    setValue('password', generateStrongPassword(), { shouldValidate: true })
+  function handleSuggestPassword() {
+    setPasswordSuggestion(generateStrongPassword())
+  }
+
+  function handleApplySuggestion() {
+    if (!passwordSuggestion) return
+    setValue('password', passwordSuggestion, { shouldValidate: true })
+    setPasswordSuggestion(null)
   }
 
   async function onSubmit(values: RegisterFormValues) {
@@ -161,7 +184,12 @@ export function RegisterPage() {
               leading={`+237`}
               placeholder="6 90 00 00 00"
               error={errors.phone?.message}
-              {...register('phone')}
+              {...register('phone', {
+                onChange: (event) => {
+                  const input = event.target as HTMLInputElement
+                  input.value = formatPhoneInput(input.value)
+                },
+              })}
             />
 
             <div>
@@ -215,12 +243,38 @@ export function RegisterPage() {
               ) : null}
               <button
                 type="button"
-                onClick={handleGeneratePassword}
+                onClick={handleSuggestPassword}
                 className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-secondary transition-colors hover:text-secondary-hover"
               >
                 <Sparkles size={14} />
-                Générer un mot de passe fort
+                Suggérer un mot de passe fort
               </button>
+
+              {passwordSuggestion ? (
+                <div className="mt-2 flex flex-col gap-2.5 rounded-md border border-secondary bg-secondary-light p-3">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles size={14} className="shrink-0 text-secondary" />
+                    <p className="text-sm font-medium text-text-primary">Mot de passe suggéré</p>
+                  </div>
+                  <code className="block w-full break-all rounded-md border border-border bg-surface px-3 py-2 text-sm font-medium text-text-primary">
+                    {passwordSuggestion}
+                  </code>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button type="button" size="sm" onClick={handleApplySuggestion}>
+                      <Check size={14} />
+                      Utiliser ce mot de passe
+                    </Button>
+                    <button
+                      type="button"
+                      onClick={handleSuggestPassword}
+                      className="inline-flex h-9 items-center gap-1.5 rounded-full px-3 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
+                    >
+                      <RefreshCw size={14} />
+                      Nouvelle suggestion
+                    </button>
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <Button type="submit" size="lg" isLoading={isSubmitting} className="mt-1">

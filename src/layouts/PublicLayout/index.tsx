@@ -3,6 +3,7 @@ import { useAuth } from '../../features/auth/hooks'
 import { logoutUser } from '../../features/auth/services'
 import { clearUser } from '../../features/auth/slice'
 import { Button } from '../../components/ui/Button'
+import { PublicFooter } from '../../components/layout/PublicFooter'
 import { useAppDispatch } from '../../store/hooks'
 
 export function PublicLayout() {
@@ -66,6 +67,8 @@ export function PublicLayout() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6">
         <Outlet />
       </main>
+
+      <PublicFooter />
     </div>
   )
 }

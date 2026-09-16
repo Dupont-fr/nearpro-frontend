@@ -32,7 +32,10 @@ export const registerSchema = z.object({
     .pipe(z.email("L'adresse email est invalide")),
   phone: z
     .string()
-    .regex(/^(\+237 ?)?[0-9 ]{8,12}$/, 'Numéro de téléphone invalide')
+    .refine(
+      (value) => /^6[5-9]\d{7}$/.test(value.replace(/\s/g, '')),
+      'Numéro de mobile camerounais invalide (ex : 6 90 00 00 00)',
+    )
     .optional()
     .or(z.literal('').transform(() => undefined)),
   password: z

@@ -14,6 +14,36 @@ Proposer les pages `/login` et `/register` conformes au design system, branchée
 - **`/register`** : rôle (CUSTOMER/PROFESSIONAL), prénom, nom, email, téléphone (WhatsApp), mot de passe.
 - **Header public** : « Connexion » / « S'inscrire » pour les visiteurs, prénom + « Déconnexion » pour les connectés.
 
+## ERGONOMIE DES FORMULAIRES (retours utilisateur)
+
+- **Mot de passe** : toggle afficher/masquer (`Eye`/`EyeOff`), checklist de contraintes en direct
+  (8 caractères, majuscule, minuscule, chiffre/symbole — verte si respectée, rouge sinon,
+  disparaît quand tout est bon), bouton **« Suggérer un mot de passe fort »** qui propose un
+  mot de passe (bannière avec « Utiliser ce mot de passe » / « Nouvelle suggestion »).
+  Règles et générateur centralisés dans `src/features/auth/password.ts` (source unique
+  schéma + UI), règles miroirs côté API (backend).
+- **Téléphone (WhatsApp)** : indicatif **+237 pré-rempli** (non modifiable), espace entre
+  l'indicatif et le numéro, **mise en forme automatique** à la saisie (`6 90 00 00 00`).
+  Validation d'un **mobile camerounais réel** : 9 chiffres commençant par `6` suivi de 5–9 —
+  rejette `6 11 11 11 11`, `7 00 00 00 00`, `6 22 22 99 99`. Même règle côté API.
+- **Footer** : `src/components/layout/PublicFooter` (marque, navigation, à propos, copyright),
+  intégré au layout public, mobile-first.
+
+## Conformité au cahier des charges (prompt.md §29)
+
+| Exigence §29 | Statut |
+| ------------ | ------ |
+| Modèle Mongoose `User` | ✅ (Sprint 1 backend) |
+| Register | ✅ `/register` |
+| Login | ✅ `/login` |
+| Logout | ✅ header public |
+| JWT + refresh token | ✅ backend (cookies HttpOnly, rotation) |
+| Middleware auth | ✅ `requireAuth` / `requireRole` |
+| Rôles | ✅ CUSTOMER / PROFESSIONAL / ADMIN |
+| Composants du design system (Input/Button/Card) | ✅ aucun style ad hoc |
+| Tests (inscription, email déjà pris, mauvais mdp, token invalide, route protégée) | ✅ 13 tests backend verts |
+| Livrable : créer un compte + se connecter, UI conforme | ✅ vérifié par smoke test réel |
+
 ## Adapter l'API client
 
 - `src/lib/api.ts` : ajout de `apiRequest` / `apiPost` (méthodes, JSON, `credentials: 'include'`).
