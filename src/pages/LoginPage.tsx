@@ -56,7 +56,7 @@ export function LoginPage() {
           <span className="flex size-12 items-center justify-center rounded-2xl bg-primary text-2xl font-bold text-white shadow-md">
             N
           </span>
-          <h1 className="text-2xl font-bold text-text-primary">Bon retour 👋</h1>
+          <h1 className="text-2xl font-bold text-text-primary">Ravi de vous revoir</h1>
           <p className="text-sm text-text-secondary">
             Connectez-vous pour retrouver vos professionnels de confiance.
           </p>
