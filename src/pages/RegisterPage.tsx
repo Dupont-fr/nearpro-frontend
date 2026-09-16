@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   ArrowLeft,
   Check,
-  CheckCircle2,
   Circle,
   Eye,
   EyeOff,
@@ -219,25 +218,21 @@ export function RegisterPage() {
               {showChecklist ? (
                 <div className="mt-2 rounded-md border border-border bg-border-light px-3 py-2.5">
                   <ul className="flex flex-col gap-1.5">
-                    {PASSWORD_RULES.map((rule) => {
-                      const met = rule.test(passwordValue)
-                      const Icon = met ? CheckCircle2 : passwordValue.length > 0 ? XCircle : Circle
-                      return (
-                        <li
-                          key={rule.key}
-                          className={`flex items-center gap-1.5 text-sm ${
-                            met
-                              ? 'text-success'
-                              : passwordValue.length > 0
-                                ? 'text-error'
-                                : 'text-text-muted'
-                          }`}
-                        >
-                          <Icon size={14} className="shrink-0" />
-                          {rule.label}
-                        </li>
-                      )
-                    })}
+                    {PASSWORD_RULES.filter((rule) => !rule.test(passwordValue)).map((rule) => (
+                      <li
+                        key={rule.key}
+                        className={`flex items-center gap-1.5 text-sm ${
+                          passwordValue.length > 0 ? 'text-error' : 'text-text-muted'
+                        }`}
+                      >
+                        {passwordValue.length > 0 ? (
+                          <XCircle size={14} className="shrink-0" />
+                        ) : (
+                          <Circle size={14} className="shrink-0" />
+                        )}
+                        {rule.label}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               ) : null}
