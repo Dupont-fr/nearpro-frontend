@@ -33,12 +33,12 @@ src/
 ## État
 
 - **Redux** : état global applicatif (auth, préférences UI, session, notifications).
-- **TanStack Query** : cache des données serveur (health, businesses, search).
+- **TanStack Query** : cache des données serveur (catégories, health, businesses, search).
 - **Zod** : schémas de validation partagés entre les formulaires (react-hook-form `zodResolver`) et les types.
 
-## Routes (Sprint 1)
+## Routes
 
-- `/` — page d'accueil
+- `/` — page d'accueil (navigation + catégories chargées depuis l'API, Sprint 2)
 - `/login` — connexion
 - `/register` — création de compte (CUSTOMER / PROFESSIONAL)
 

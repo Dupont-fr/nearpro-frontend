@@ -7,6 +7,18 @@ export interface ApiResponse<T> {
 
 export type UserRole = 'CUSTOMER' | 'PROFESSIONAL' | 'ADMIN'
 
+export interface Category {
+  id: string
+  name: string
+  slug: string
+  parentId: string | null
+  order: number
+  isActive: boolean
+  children: Category[]
+  createdAt: string
+  updatedAt: string
+}
+
 export interface AuthUser {
   id: string
   firstName: string

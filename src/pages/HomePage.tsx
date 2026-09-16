@@ -1,39 +1,43 @@
 import {
   BadgeCheck,
+  Briefcase,
   Car,
   ClipboardCheck,
   Cpu,
   MessageCircle,
   Scissors,
   Search,
+  Shirt,
+  ShoppingBag,
   Star,
-  Stethoscope,
+  Tag,
   UtensilsCrossed,
   Wrench,
+  type LucideIcon,
 } from 'lucide-react'
-import type { FormEvent, ReactNode } from 'react'
+import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Badge } from '../components/ui/Badge'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Input } from '../components/ui/Input'
+import { Skeleton } from '../components/ui/Skeleton'
+import { useCategories } from '../features/categories/hooks'
 import { addToast } from '../features/ui/slice'
 import { useAppDispatch } from '../store/hooks'
 
-interface Category {
-  icon: ReactNode
-  label: string
-  count: string
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  automobile: Car,
+  beaute: Scissors,
+  alimentation: UtensilsCrossed,
+  maison: Wrench,
+  bricolage: Wrench,
+  plomberie: Wrench,
+  technologie: Cpu,
+  commerce: ShoppingBag,
+  mode: Shirt,
+  services: Briefcase,
 }
-
-const CATEGORIES: Category[] = [
-  { icon: <Car size={22} />, label: 'Automobile', count: '120+ pros' },
-  { icon: <Wrench size={22} />, label: 'Bricolage & Maison', count: '85+ pros' },
-  { icon: <Scissors size={22} />, label: 'Beauté & Bien-être', count: '140+ pros' },
-  { icon: <Stethoscope size={22} />, label: 'Santé', count: '60+ pros' },
-  { icon: <Cpu size={22} />, label: 'Technologie', count: '45+ pros' },
-  { icon: <UtensilsCrossed size={22} />, label: 'Alimentation', count: '110+ pros' },
-]
 
 const POPULAR_SERVICES = ['Mécanicien', 'Coiffeur', 'Plombier', 'Salon de beauté']
 
@@ -63,10 +67,11 @@ const STEPS = [
 
 export function HomePage() {
   const dispatch = useAppDispatch()
+  const { data: categories = [], isPending, isError, refetch } = useCategories()
 
   function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    dispatch(addToast({ message: 'La recherche arrive au Sprint 2. Patience !', variant: 'info' }))
+    dispatch(addToast({ message: 'La recherche arrive bientôt. Patience !', variant: 'info' }))
   }
 
   return (
@@ -176,25 +181,59 @@ export function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {CATEGORIES.map((category) => (
-            <Link
-              key={category.label}
-              to="/"
-              onClick={() =>
-                dispatch(
-                  addToast({ message: 'Le catalogue arrive au Sprint 2.', variant: 'info' }),
-                )
-              }
-              className="group rounded-2xl border border-border bg-surface p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
-            >
-              <span className="flex size-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-colors group-hover:bg-primary group-hover:text-white">
-                {category.icon}
-              </span>
-              <h3 className="mt-3 text-sm font-semibold text-text-primary">{category.label}</h3>
-              <p className="mt-0.5 text-xs text-text-muted">{category.count}</p>
-            </Link>
-          ))}
+          {isPending
+            ? Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={index}
+                  className="rounded-2xl border border-border bg-surface p-4 shadow-sm"
+                >
+                  <Skeleton className="size-11 rounded-xl" />
+                  <Skeleton className="mt-3 h-4 w-3/4" />
+                  <Skeleton className="mt-2 h-3 w-1/2" />
+                </div>
+              ))
+            : isError
+              ? null
+              : categories.map((category) => {
+                  const Icon = CATEGORY_ICONS[category.slug] ?? Tag
+                  const subCount = category.children.length
+                  const subLabel =
+                    subCount > 0 ? `${subCount} sous-catégorie${subCount > 1 ? 's' : ''}` : 'Bientôt disponible'
+                  return (
+                    <button
+                      key={category.id}
+                      type="button"
+                      onClick={() =>
+                        dispatch(
+                          addToast({
+                            message: `« ${category.name} » — le catalogue arrive bientôt.`,
+                            variant: 'info',
+                          }),
+                        )
+                      }
+                      className="group rounded-2xl border border-border bg-surface p-4 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
+                    >
+                      <span className="flex size-11 items-center justify-center rounded-xl bg-primary-light text-primary transition-colors group-hover:bg-primary group-hover:text-white">
+                        <Icon size={22} />
+                      </span>
+                      <h3 className="mt-3 text-sm font-semibold text-text-primary">
+                        {category.name}
+                      </h3>
+                      <p className="mt-0.5 text-xs text-text-muted">{subLabel}</p>
+                    </button>
+                  )
+                })}
         </div>
+        {isError ? (
+          <Card className="mt-4 flex flex-col items-center gap-3 p-6 text-center">
+            <p className="text-sm text-text-secondary">
+              Impossible de charger les catégories. Vérifiez votre connexion.
+            </p>
+            <Button variant="outline" size="sm" onClick={() => void refetch()}>
+              Réessayer
+            </Button>
+          </Card>
+        ) : null}
       </section>
 
       {/* CTA PROFESSIONNELS */}
