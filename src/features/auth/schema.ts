@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import {
+  PASSWORD_CHECKS,
+  PASSWORD_MAX_LENGTH,
+  PASSWORD_MIN_LENGTH,
+} from './password'
 
 export const loginSchema = z.object({
   email: z
@@ -27,13 +32,20 @@ export const registerSchema = z.object({
     .pipe(z.email("L'adresse email est invalide")),
   phone: z
     .string()
-    .regex(/^\+?[0-9 ]{9,20}$/, 'Numéro de téléphone invalide')
+    .regex(/^(\+237 ?)?[0-9 ]{8,12}$/, 'Numéro de téléphone invalide')
     .optional()
     .or(z.literal('').transform(() => undefined)),
   password: z
     .string()
-    .min(8, 'Le mot de passe doit contenir au moins 8 caractères')
-    .max(72, 'Le mot de passe est trop long'),
+    .min(PASSWORD_MIN_LENGTH, 'Le mot de passe doit contenir au moins 8 caractères')
+    .max(PASSWORD_MAX_LENGTH, 'Le mot de passe est trop long')
+    .superRefine((value, ctx) => {
+      for (const check of PASSWORD_CHECKS) {
+        if (!check.test(value)) {
+          ctx.addIssue({ code: 'custom', path: ['password'], message: check.message })
+        }
+      }
+    }),
   role: z.enum(['CUSTOMER', 'PROFESSIONAL']).optional(),
 })
 

@@ -1,8 +1,10 @@
-import type { ComponentPropsWithRef } from 'react'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
 
 interface InputProps extends ComponentPropsWithRef<'input'> {
   label?: string
   error?: string
+  leading?: ReactNode
+  trailing?: ReactNode
 }
 
 const inputClasses = (hasError: boolean) =>
@@ -10,7 +12,15 @@ const inputClasses = (hasError: boolean) =>
    placeholder:text-text-muted transition-colors focus:outline-2 focus:outline-offset-1
    ${hasError ? 'border-error focus:outline-error' : 'border-border focus:outline-primary'}`
 
-export function Input({ label, error, className = '', id, ...props }: InputProps) {
+export function Input({
+  label,
+  error,
+  leading,
+  trailing,
+  className = '',
+  id,
+  ...props
+}: InputProps) {
   const inputId = id ?? (props.name ? `input-${props.name}` : undefined)
 
   return (
@@ -20,7 +30,21 @@ export function Input({ label, error, className = '', id, ...props }: InputProps
           {label}
         </label>
       ) : null}
-      <input id={inputId} className={`${inputClasses(Boolean(error))} ${className}`} {...props} />
+      <div className="relative">
+        {leading ? (
+          <span className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3 text-base font-medium text-text-muted">
+            {leading}
+          </span>
+        ) : null}
+        <input
+          id={inputId}
+          className={`${inputClasses(Boolean(error))} ${leading ? 'pl-12' : ''} ${trailing ? 'pr-11' : ''} ${className}`}
+          {...props}
+        />
+        {trailing ? (
+          <span className="absolute inset-y-0 right-0 z-10 flex items-center pr-1.5">{trailing}</span>
+        ) : null}
+      </div>
       {error ? (
         <p className="mt-1 text-sm text-error" role="alert">
           {error}
