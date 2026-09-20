@@ -46,9 +46,16 @@ export function BusinessFormPage() {
         latitude: null,
         longitude: null,
       },
-      services: [],
       hours: [],
       images: [],
+      services: [
+        {
+          name: '',
+          description: null,
+          price: null,
+          durationMinutes: null,
+        },
+      ],
     },
   })
 
@@ -72,15 +79,24 @@ export function BusinessFormPage() {
           latitude: values.location.latitude ?? null,
           longitude: values.location.longitude ?? null,
         },
-        services: [],
+        services: values.services.map((s) => ({
+          name: s.name,
+          description: typeof s.description === 'string' && s.description.trim() ? s.description : null,
+          price: s.price == null ? null : (typeof s.price === 'string' ? Number(s.price) : s.price),
+          durationMinutes: s.durationMinutes == null ? null : (typeof s.durationMinutes === 'string' ? Number(s.durationMinutes) : s.durationMinutes),
+        })),
+        hours: [],
+        images: [],
       })
       navigate('/my-businesses')
     } catch (error) {
       setFormError(
-        error instanceof Error ? error.message : 'Une erreur est survenue lors de la création'
+        error instanceof Error ? error.message : 'Une erreur est survenue lors de la crAation'
       )
     }
   }
+
+  const watchCategoryId = watch('categoryId')
 
   return (
     <div className="mx-auto w-full max-w-2xl space-y-6">
@@ -89,13 +105,13 @@ export function BusinessFormPage() {
         className="inline-flex items-center gap-1.5 text-sm font-medium text-text-secondary transition-colors hover:text-text-primary"
       >
         <ArrowLeft size={16} />
-        Retour à &laquo;&nbsp;Mes activités&nbsp;&raquo;
+        Retour A&nbsp;&laquo;&nbsp;Mes activitAcs&nbsp;&raquo;
       </Link>
 
       <div>
-        <h1 className="text-2xl font-bold text-text-primary">Nouvelle activité</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Nouvelle activitAc</h1>
         <p className="mt-1 text-sm text-text-secondary">
-          Renseignez les informations de base. Vous pourrez compléter services et horaires ensuite.
+          Renseignez les informations de base. Vous pourrez complAter services et horaires ensuite.
         </p>
       </div>
 
@@ -107,27 +123,27 @@ export function BusinessFormPage() {
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
         <Card className="space-y-4 p-5">
-          <h2 className="font-semibold text-text-primary">Informations générales</h2>
+          <h2 className="font-semibold text-text-primary">Informations gAcnAcrales</h2>
 
           <Input
-            label="Nom de l&rsquo;activité"
-            placeholder="Ex : Salon Élégance"
+            label="Nom de l&rsquo;activitAc"
+            placeholder="Ex : Salon A%lAcgance"
             error={errors.name?.message}
             {...register('name')}
           />
 
           <Textarea
             label="Description"
-            placeholder="Décrivez votre activité en quelques lignes"
+            placeholder="DAccrivez votre activitAc en quelques lignes"
             rows={4}
             error={errors.description?.message}
             {...register('description')}
           />
 
           <Select
-            label="Catégorie"
-            placeholder="Choisissez une catégorie"
-            value={watch('categoryId')}
+            label="CatAcgorie"
+            placeholder="Choisissez une catAcgorie"
+            value={watchCategoryId}
             onChange={(event) => setValue('categoryId', event.target.value, { shouldValidate: true })}
             error={errors.categoryId?.message}
             disabled={categoriesPending}
@@ -142,7 +158,7 @@ export function BusinessFormPage() {
           <h2 className="font-semibold text-text-primary">Contact</h2>
 
           <Input
-            label="Téléphone"
+            label="TAclAcphone"
             placeholder="6 90 00 00 00"
             error={errors.contacts?.phone?.message}
             {...register('contacts.phone')}
@@ -188,6 +204,38 @@ export function BusinessFormPage() {
           />
         </Card>
 
+        <Card className="space-y-4 p-5">
+          <h2 className="font-semibold text-text-primary">Prestation (obligatoire)</h2>
+          <p className="text-sm text-text-secondary">
+            Ajoutez au moins un service. Nom obligatoire ; prix et durAce facultatifs.
+          </p>
+
+          <Input
+            label="Nom du service"
+            placeholder="Ex : Coupe + shampooing"
+            error={errors.services?.[0]?.name?.message}
+            {...register('services.0.name')}
+          />
+
+          <Input
+            label="Prix (FCFA, optionnel)"
+            type="number"
+            min={0}
+            placeholder="Ex : 5000"
+            error={errors.services?.[0]?.price?.message}
+            {...register('services.0.price', { setValueAs: (v) => (v === '' ? null : Number(v)) })}
+          />
+
+          <Input
+            label="DurAce (minutes, optionnel)"
+            type="number"
+            min={5}
+            placeholder="Ex : 60"
+            error={errors.services?.[0]?.durationMinutes?.message}
+            {...register('services.0.durationMinutes', { setValueAs: (v) => (v === '' ? null : Number(v)) })}
+          />
+        </Card>
+
         <div className="flex justify-end gap-3">
           <Link to="/my-businesses">
             <Button variant="outline" type="button">
@@ -195,7 +243,7 @@ export function BusinessFormPage() {
             </Button>
           </Link>
           <Button type="submit" isLoading={isSubmitting}>
-            Créer mon activité
+            CrAcer mon activitAc
           </Button>
         </div>
       </form>
