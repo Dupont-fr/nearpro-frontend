@@ -247,10 +247,10 @@ export function HomePage() {
           </div>
           <div className="flex shrink-0 gap-2">
             <Link
-              to="/register"
+              to="/my-businesses/new"
               className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-base font-semibold text-primary transition-colors hover:bg-primary-light"
             >
-              Créer mon activité
+              CrAcer mon activitAc
             </Link>
           </div>
         </div>

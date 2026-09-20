@@ -41,7 +41,19 @@ export function apiGet<T>(path: string): Promise<T> {
 export function apiPost<T>(path: string, payload?: unknown): Promise<T> {
   return apiRequest<T>(path, {
     method: 'POST',
-    headers: payload === undefined ? undefined : { 'Content-Type': 'application/json' },
-    body: payload === undefined ? undefined : JSON.stringify(payload),
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
   })
+}
+
+export function apiPut<T>(path: string, payload?: unknown): Promise<T> {
+  return apiRequest<T>(path, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+}
+
+export function apiDelete<T>(path: string): Promise<T> {
+  return apiRequest<T>(path, { method: 'DELETE' })
 }
